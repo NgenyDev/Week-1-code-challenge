@@ -1,68 +1,66 @@
-function calculateIndividualNetSalary(basicSalary, benefits){
-    const TaxRates = [
-        {min: 0, max: 24000, rate: 10 },
-        {min: 24001, max: 32333, rate: 25 },
-        {min: 32334, max: 41999, rate: 30 },
-        {min: 42000, max: 499999, rate: 35 }
-
-    ];
-    const NHIF_RATES = [
-        { min: 0, max: 5999, amount: 150 },
-        { min: 6000, max: 7999, amount: 300 },
-        { min: 8000, max: 11999, amount: 400 },
-        { min: 12000, max: 14999, amount: 500 },
-        { min: 15000, max: 19999, amount: 600 },
-        { min: 20000, max: 24999, amount: 750 },
-        { min: 25000, max: 29999, amount: 850 },
-        { min: 30000, max: 34999, amount: 900 },
-        { min: 35000, max: 39999, amount: 950 },
-        { min: 40000, max: 44999, amount: 1000 },
-        { min: 45000, max: 49999, amount: 1100 },
-        { min: 50000, max: 59999, amount: 1200 },
-        { min: 60000, max: 69999, amount: 1300 },
-        { min: 70000, max: 79999, amount: 1400 },
-        { min: 80000, max: 89999, amount: 1500 },
-        { min: 90000, max: 99999, amount: 1600 },
-        { min: 100000, max: Infinity, amount: 1700 },
-    ];
-    const nssfRateEmployee = 0.06;
-    let grossSalary = basicSalary + benefits;
-    let nhifDeductions = calculateNHIFDeduction(grossSalary);
-    let nssfDeduction = basicSalary * nssfRateEmployee;
-    let taxableIncome = grossSalary - nhifDeduction - nssfDeduction;
-    let payee = calculatePAYE(taxableIncome)
-;    let netSalary = grossSalary - payee - nhifDeduction - nssfDeduction;
-    return {
-        grossSalary: grossSalary,
-        nhifDeduction: nhifDeduction,
-        nssfDeduction: nssfDeduction,
-        payee: payee,
-        netSalary: netSalary
-    };
-}
-
-function calculateNHIFDeduction(grossSalary) {
-    for (let i = 0; i < NHIF_RATES.length; i++) {
-        if (grossSalary >= NHIF_RATES[i].min && grossSalary <= NHIF_RATES[i].max) {
-            return NHIF_RATES[i].amount;
+function calculateIndividualNetSalary(basicSalary) {
+    const payeeRates = function (basicSalary) {
+        if (basicSalary > 0 && basicSalary <= 24000) {
+            return (basicSalary * 0.1)
+        } else if (basicSalary > 24000 && basicSalary <= 32333) {
+            return (basicSalary * 0.25)
+        } else if (basicSalary > 32334 && basicSalary <= 41999) {
+            return (basicSalary * 0.3)
+        } else if (basicSalary > 42000 && basicSalary <= 499999) {
+            return (basicSalary * 0.35)
         }
     }
-    return 0;
-}
 
-function calculatePaye(taxableIncome) {
-    let tax = 0;
-    for (let i = 0; i < TaxRates.length; i++) {
-        if (taxableIncome > TaxRates[i].min) {
-            let taxableAmount = Math.min(taxableIncome - TaxRates[i].min, TaxRates[i].max - TaxRates[i].min);
-            tax += taxableAmount * (TaxRates[i].rate / 100);
-        } else {
-            break;
-        }
-    }
-    return tax;
-}
 
-        
- 
+const NhifRates = function(basicSalary){
+
+
+if (basicSalary > 0 && basicSalary <= 5999) {
+    return 150;
+} else if (basicSalary > 6000 && basicSalary <= 7999) {
+    return 300;
+} else if (basicSalary > 8000 && basicSalary <= 11999) {
+    return 400
+} else if (basicSalary > 12000 && basicSalary <= 14999) {
+    return 500;
+} else if (basicSalary > 15000 && basicSalary <= 19999) {
+    return 600;
+} else if (basicSalary > 20000 && basicSalary <= 24999) {
+    return 750;
+} else if (basicSalary > 25000 && basicSalary <= 29999) {
+    return 850;
+} else if (basicSalary > 30000 && basicSalary <= 34999) {
+    return 900;
+} else if (basicSalary > 35000 && basicSalary <= 39999) {
+    return 950;
+} else if (basicSalary > 40000 && basicSalary <= 44999) {
+    return 1000;
+} else if (basicSalary > 45000 && basicSalary <= 49999) {
+    return 1100;
+} else if (basicSalary > 50000 && basicSalary <= 59999) {
+    return 1200;
+} else if (basicSalary > 60000 && basicSalary <= 69999) {
+    return 1300;
+} else if (basicSalary > 70000 && basicSalary <= 79999) {
+    return 1400;
+} else if (basicSalary > 80000 && basicSalary <= 89999) {
+    return 1500;
+} else if (basicSalary > 90000 && basicSalary <= 99999) {
+    return 1600;
+} else if (basicSalary > 100000) {
+    return 1700;
+}
+}
+const nssfRates  = function(basicSalary){
+    return basicSalary * 0.06
+
+}
+let netSalary = basicSalary - (nssfRates(basicSalary) + NhifRates(basicSalary) + payeeRates(basicSalary));
+return netSalary;
+}
+console.log(calculateIndividualNetSalary(20000))
+
+   
+
+
 
